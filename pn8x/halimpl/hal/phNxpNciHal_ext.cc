@@ -576,6 +576,13 @@ static NFCSTATUS phNxpNciHal_process_ext_cmd_rsp(uint16_t cmd_len,
     status = NFCSTATUS_FAILED;
     goto clean_and_return;
   }
+
+  if (cmd_len < 3) {
+    android_errorWriteLog(0x534e4554, "153880630");
+    status = NFCSTATUS_FAILED;
+    goto clean_and_return;
+  }
+
   /* No NTF expected for OMAPI command */
   if (p_cmd[0] == 0x2F && p_cmd[1] == 0x1 && p_cmd[2] == 0x01) {
     nxpncihal_ctrl.nci_info.wait_for_ntf = FALSE;
@@ -703,7 +710,8 @@ NFCSTATUS phNxpNciHal_write_ext(uint16_t* cmd_len, uint8_t* p_cmd_data,
     }
   }
 
-  if (bEnableMfcReader && p_cmd_data[0] == 0x21 && p_cmd_data[1] == 0x00) {
+  if (*cmd_len <= (NCI_MAX_DATA_LEN - 3) && bEnableMfcReader &&
+      p_cmd_data[0] == 0x21 && p_cmd_data[1] == 0x00) {
     NXPLOG_NCIHAL_D("Going through extns - Adding Mifare in RF Discovery");
     p_cmd_data[2] += 3;
     p_cmd_data[3] += 1;
@@ -814,7 +822,8 @@ NFCSTATUS phNxpNciHal_write_ext(uint16_t* cmd_len, uint8_t* p_cmd_data,
     phNxpNciHal_print_packet("RECV", p_rsp_data, 5);
     //        status = NFCSTATUS_FAILED;
     NXPLOG_NCIHAL_D("> Going through workaround - Dirty Set Config - End ");
-  } else if (p_cmd_data[0] == 0x21 && p_cmd_data[1] == 0x00) {
+  } else if (*cmd_len <= (NCI_MAX_DATA_LEN - 3) && p_cmd_data[0] == 0x21 &&
+             p_cmd_data[1] == 0x00) {
     NXPLOG_NCIHAL_D(
         "> Going through workaround - Add Mifare Classic in Discovery Map");
     p_cmd_data[*cmd_len] = 0x80;
