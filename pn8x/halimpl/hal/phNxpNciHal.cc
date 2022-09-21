@@ -2600,6 +2600,10 @@ int phNxpNciHal_ioctl(long arg, void* p_data) {
   }
   switch (arg) {
     case HAL_NFC_IOCTL_SPI_DWP_SYNC: {
+      if (pInpOutData->inp.data.nciCmd.cmd_len > MAX_IOCTL_TRANSCEIVE_CMD_LEN) {
+        android_errorWriteLog(0x534e4554, "238083126");
+        return -1;
+      }
       ret = phNxpNciHal_send_ese_hal_cmd(pInpOutData->inp.data.nciCmd.cmd_len,
                                          pInpOutData->inp.data.nciCmd.p_cmd);
       pInpOutData->out.data.nciRsp.rsp_len = nxpncihal_ctrl.rx_ese_data_len;
