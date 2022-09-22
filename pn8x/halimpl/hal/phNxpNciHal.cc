@@ -1880,6 +1880,14 @@ int phNxpNciHal_core_initialized(uint16_t core_init_rsp_params_len,
       // if the last command is deactivate to idle and RF status is also idle ,
       // no need to execute the command .
       {
+        if (p_core_init_rsp_params[35] > (core_init_rsp_params_len - 36)) {
+          if (buffer) {
+            free(buffer);
+            buffer = NULL;
+          }
+          android_errorWriteLog(0x534e4554, "231445184");
+          return NFCSTATUS_FAILED;
+        }
         tmp_len = p_core_init_rsp_params[35];
 
         /* Check for NXP ext before sending write */
