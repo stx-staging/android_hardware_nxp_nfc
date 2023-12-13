@@ -193,3 +193,35 @@ NFCSTATUS phNxpNciHal_configGPIOControl(uint8_t gpioControl[], uint8_t len);
 **
 *******************************************************************************/
 void phNxpNciHal_decodeGpioStatus(void);
+
+/*******************************************************************************
+**
+** Function         phNxpNciHal_isVendorSpecificCommand()
+**
+** Description      this function checks vendor specific command or not
+**
+** Returns          true if the command is vendor specific otherwise false
+*******************************************************************************/
+bool phNxpNciHal_isVendorSpecificCommand(uint16_t data_len,
+                                         const uint8_t* p_data);
+
+/*******************************************************************************
+**
+** Function         phNxpNciHal_handleVendorSpecificCommand()
+**
+** Description      This handles the vendor specific command
+**
+** Returns          It returns number of bytes received.
+*******************************************************************************/
+int phNxpNciHal_handleVendorSpecificCommand(uint16_t data_len,
+                                            const uint8_t* p_data);
+
+/*******************************************************************************
+**
+** Function         phNxpNciHal_vendorSpecificCallback()
+**
+** Params           oid, status
+** Description      This function sends response to Vendor Specific commands
+**
+*******************************************************************************/
+void phNxpNciHal_vendorSpecificCallback(int oid, int status);
